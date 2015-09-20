@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0" id="com.dorlomin.swiftLocation" version="0.1.0">
+    <name>swiftLocation</name>
+    <!-- ios -->
+    <platform name="ios">
+        <!-- Config file target -->
+        <config-file target="config.xml" parent="/*">
+            <feature name="swiftLocation">
+                <param name="ios-package" value="swiftLocation" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <!-- Javascript module -->
+        <js-module src="www/ios/swiftLocation.js" name="swiftLocation">
+            <clobbers target="swiftLocation" />
+        </js-module>
+        <!-- Plugin sourcefiles-->
+        <header-file src="src/ios/swiftLocation.swift" />
+        <!-- LocationManager and DataManager classes -->
+        <source-file src="src/ios/LocationManager.swift"/>
+        <source-file src="src/ios/DataManager.swift"/>
+        <source-file src="src/ios/LocationData.swift"/>
+        <!-- iOs CoreLocation Permissions -->
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+            <string>Enable location services</string>
+        </config-file>
+        <!-- Background modes -->
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>location</string>
+            </array>
+        </config-file>
+    </platform>
+</plugin>
