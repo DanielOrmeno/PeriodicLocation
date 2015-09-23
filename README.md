@@ -38,7 +38,7 @@ The easiest way to achieve this is to navigate to the plugins directory in the X
 
 **7.-** Install the surveyLocation plugin from the repo, navigate to your project's root directory and install the plugin via the CLI.
 ```
-    $ cordova plugin add https://github.com/DanielOrmeno/swiftLocation.git
+    $ cordova plugin add https://github.com/DanielOrmeno/PeriodicLocation.git
 ```
 
 **8.-** Prepare and Build the project through the CLI
