@@ -1,4 +1,4 @@
-# swiftLocation Cordova Plugin
+# PeriodicLocation Cordova Plugin
 
 ##Overview ##
 
