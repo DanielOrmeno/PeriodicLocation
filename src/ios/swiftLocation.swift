@@ -1,6 +1,5 @@
 /*******************************************************************************************************************
-|   File: surveyLocation.swift
-|   Proyect: Surveys@Griffith
+|   File: swiftLocation.swift
 |
 |   Description: - surveyLocation class (swift). Main class for iOs cordova location plugin for the Surveys@Griffth
 |   ionic application. This class features three methods to interface with the SurveyLocationManager and DataManager
@@ -38,9 +37,9 @@ import Foundation
         
         let message = "Location Updates initiated"
         
-        var pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
+        let pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
         
-        commandDelegate.sendPluginResult(pluginResult, callbackId:command.callbackId)
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
     }
     
     /********************************************************************************************************************
@@ -59,8 +58,8 @@ import Foundation
         
         let message = "Location Updates Disabled"
         
-        var pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
-        commandDelegate.sendPluginResult(pluginResult, callbackId: command.callbackId)
+        let pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
+        commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
     }
     
     /********************************************************************************************************************
@@ -76,13 +75,7 @@ import Foundation
     
     func getLocationRecords (command: CDVInvokedUrlCommand){
         
-        //- Empty array of records (String) in the format: lat,long,timestamp. Returned to be handled by JavaScript
         var locationRecords = [String]()
-        var concatenatedRecords = [String]()
-        
-        //- Control counter (counts to 4 to append records to concatenatedRecords array)
-        var count = 0
-        var hourRecord: String = ""
         
         //- Optional CDVPluginResult.
         var pluginResult: CDVPluginResult?
@@ -95,36 +88,17 @@ import Foundation
                 let jsonString = "{\"timestamp\":\"\(timestamp)\",\"lat\":\"\(loc.latitude)\",\"lon\":\"\(loc.longitude)\"}"
                 locationRecords.append(jsonString)
             }
-            
-            //- Concatenate records and add every 4 to result array
-            for loc in locationRecords {
-                hourRecord += "\(loc),"
-                count++
-                if (count==4){
-                    //- Remove last comma from string
-                    hourRecord = "[\(hourRecord.substringToIndex(hourRecord.endIndex.predecessor()))]"
-                    concatenatedRecords.append(hourRecord)
-                    count = 0
-                    hourRecord = ""
-                }
-            }
-            
-            if (hourRecord != ""){
-                //- Remove last comma from string
-                hourRecord = "[\(hourRecord.substringToIndex(hourRecord.endIndex.predecessor()))]"
-                concatenatedRecords.append(hourRecord)
-            }
         }
         
         //- If array contains records -> CDVCommandStatus_OK else CDVCommandStatus_Error
         if (locationRecords.count>0){
-            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArray: concatenatedRecords)
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArray: locationRecords)
         } else {
-            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: "No records fetched")
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: "No location records found")
         }
         
         //- Returns CDVCommandStatus value and location records if any to javascript handler
-        commandDelegate.sendPluginResult(pluginResult, callbackId: command.callbackId)
+        commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
     }
     
     /********************************************************************************************************************

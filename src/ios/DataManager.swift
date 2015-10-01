@@ -14,11 +14,10 @@
  import CoreLocation
  
  class DataManager {
-    
     // =====================================     INSTANCE VARIABLES / PROPERTIES      =============================//
     
     //- MaxNumber of records allowed
-    let MaxNoOfRecords:Int  = 32
+    var MaxNoOfRecords:Int  = 10
     
     //- Date Format
     let DATEFORMAT = "dd-MM-yyyy, HH:mm:ss"
@@ -34,12 +33,11 @@
     let UserDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     
     // =====================================     CLASS CONSTRUCTORS      =========================================//
-    
-    init () { }
-    
-    // =====================================     CLASS METHODS      ===============================================//
-    
-    
+    init () {}
+    // =====================================     Accessors & Mutators =================================================//
+    func setNumberOfRecords(numberOfRecords: Int){self.MaxNoOfRecords = numberOfRecords}
+    func getNumberOfRecords() -> Int {return self.MaxNoOfRecords}
+    // =====================================     CLASS METHODS      ===================================================//
     /********************************************************************************************************************
     METHOD NAME: savelocationRecords
     INPUT PARAMETERS: array of LocationData Objects
@@ -187,7 +185,6 @@
         
         //- Save new record
         self.saveLocationRecords(sortedRecords)
-        
     }
     
     /********************************************************************************************************************

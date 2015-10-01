@@ -1,5 +1,5 @@
 /*******************************************************************************************************************
-|   File: locationManager.js
+|   File: swiftLocation.js
 |   Proyect: swiftLocation cordova plugin
 |
 |   Description: - Javascript handler of the cordova location plugin
@@ -66,48 +66,8 @@ swiftLocation.prototype.getLocationRecords = function(callback) {
     exec(function(data){
         // result handler
 
-        //- New Array for storing JSON Objects
-        var JSONlocations= [];
-        
-         for (i=0; i< data.length; i++) {
-            var jsonObj = JSON.parse(data[i]);
-            JSONlocations[i] = jsonObj;
-            if(i === data.length-1)
-                callback(JSONlocations);
-         }
-         
-         for (i=0; i<JSONlocations.length; i++){
-            console.log(JSONlocations[i]);
-         }
-    },
-         function(error){
-        // error handler
-        console.log("Error" + error);
-    },
-         "swiftLocation",
-         "getLocationRecords",
-        []);
-}
-
-/********************************************************************************************************************
-METHOD NAME: getFormattedLocationRecords
-INPUT PARAMETERS: command: None - empty args
-RETURNS: None
-    
-OBSERVATIONS: retrieves location records from memory for usability, records are returned as an array of strings
-********************************************************************************************************************/
-swiftLocation.prototype.getFormattedLocationRecords = function(callback) {
-    exec(function(data){
-        // result handler
-
-        //- New Array for storing JSON Objects
-        var locations= [];
-         
-         for (i=0; i<data.length; i++){
-            console.log(data[i]);
-            if(i === data.length-1)
-                callback(data);
-         }
+         if (typeof callback === 'function')
+            callback(data);
     },
          function(error){
         // error handler
