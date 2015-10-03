@@ -1,10 +1,7 @@
 /*******************************************************************************************************************
 |   File: swiftLocation.swift
 |
-|   Description: - surveyLocation class (swift). Main class for iOs cordova location plugin for the Surveys@Griffth
-|   ionic application. This class features three methods to interface with the SurveyLocationManager and DataManager
-|   classes to enable the application to get hourly location updates and save them to memory using the CoreLocation
-|   and CoreData frameworks.
+|   Description: - swiftLocation class (swift). Main class for iOs cordova location plugin.
 |
 |   Copyright (c) 2014 AppFactory. All rights reserved.
 *******************************************************************************************************************/
@@ -18,7 +15,166 @@ import Foundation
     let locationManager : LocationManager = LocationManager()
     
     // =====================================     PLUGIN METHODS      ===============================================//
+    /********************************************************************************************************************
+    METHOD NAME: areLocationUpdatesEnabled
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
     
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func areLocationUpdatesEnabled (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let locationUpdatesEnabled = "{enabled: true}"
+        let locationUpdatesDisabled = "{enabled: false}"
+        let errorMessage = "Unable to get status of location updates"
+        
+        var status = self.locationManager.areUpdatesEnabled()
+
+        let message = status ? locationUpdatesEnabled : locationUpdatesDisabled
+
+        if (message != nil) 
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
+        else 
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: getKeepAliveTimeInterval
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func getKeepAliveTimeInterval (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let errorMessage = "Could not retrieve Keep Alive interval"
+        let keepAliveInterval = self.locationManager.getKeepAliveTimeInterval()
+
+        if (keepAliveInterval != nil) {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(keepAliveInterval)}")
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: getUpdateIntervals
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func getUpdateIntervals (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let errorMessage = "Could not retrieve Updates interval"
+        let updatesInterval = self.locationManager.getIntervals()
+
+        if (updatesInterval != nil) {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(updatesInterval)}")
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: getMaxNumberOfRecords
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func getMaxNumberOfRecords (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let errorMessage = "Could not retrieve max number of records"
+        let numberOfRecords = self.locationManager.dataManager.getNumberOfRecords()
+
+        if (numberOfRecords != nil) {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(numberOfRecords)}")
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: setKeepAliveTimeInterval
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func setKeepAliveTimeInterval (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let args = command.arguments
+        let successMessage = "Keep Alive Interval updated to \(args[0]) seconds"
+        let errorMessage = "Could not update Keep Alive interval to \(args[0]) seconds"
+        
+        self.locationManager.setKeepAliveTimeInterval(args[0])
+
+        if (self.locationManager.getKeepAliveTimeInterval() == args[0]){
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMessage)
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: setUpdateIntervals
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func setUpdateIntervals (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let args = command.arguments
+        let successMessage = "Updates Interval updated to \(args[0]) seconds"
+        let errorMessage = "Could not update interval to \(args[0]) seconds"
+        
+        self.locationManager.setIntervals(args[0])
+
+        if (self.locationManager.getIntervals() == args[0]){
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMessage)
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
+    /********************************************************************************************************************
+    METHOD NAME: setNumberOfRecords
+    INPUT PARAMETERS: command: CDVInvokedURLCommand
+    RETURNS:
+    
+    OBSERVATIONS:
+    ********************************************************************************************************************/
+    func setNumberOfRecords (command: CDVInvokedUrlCommand) {
+
+        var pluginResult: CDVPluginResult;
+        let args = command.arguments
+        let message = "Numer of records updated to \(args[0])"
+        let errorMessage = "unable to update number of records to \(args[0])"
+        
+        self.locationManager.dataManager.setNumberOfRecords(args[0])
+
+        if (self.locationManager.dataManager.getNumberOfRecords() == args[0]){
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
+        } else {
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: "Unable to update number of records")
+        }
+        
+        commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
+    }
     /********************************************************************************************************************
     METHOD NAME: startLocationUpdates
     INPUT PARAMETERS: command: CDVInvokedURLCommand
@@ -30,7 +186,6 @@ import Foundation
     are handled by the locationManager property. If succesful this method parses a "Location Updates Initiated" message
     to the javascrip side of the cordova plugin.
     ********************************************************************************************************************/
-    
     func startLocationServices (command: CDVInvokedUrlCommand) {
         
         self.locationManager.startLocationServices()
@@ -41,7 +196,6 @@ import Foundation
         
         commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
     }
-    
     /********************************************************************************************************************
     METHOD NAME: startLocationUpdates
     INPUT PARAMETERS: command: CDVInvokedURLCommand
@@ -51,7 +205,6 @@ import Foundation
     (locationManager). Location services will only stop if they are already working. If succesful this method parses a
     "Location Updates Disabled" message to the javascrip side of the cordova plugin.
     ********************************************************************************************************************/
-    
     func stopLocationServices (command: CDVInvokedUrlCommand){
         
         self.locationManager.stopLocationServices()
@@ -61,7 +214,6 @@ import Foundation
         let pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
         commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
     }
-    
     /********************************************************************************************************************
     METHOD NAME: getLocationRecords
     INPUT PARAMETERS: command: CDVInvokedURLCommand
@@ -72,7 +224,6 @@ import Foundation
     
     [{"lat":" latValue ","lon":" lonValue ","timestamp":" timeValue as dd-MM-yyyy, HH:mm:ss"},{...},{...},{...}]
     ********************************************************************************************************************/
-    
     func getLocationRecords (command: CDVInvokedUrlCommand){
         
         var locationRecords = [String]()
@@ -100,7 +251,6 @@ import Foundation
         //- Returns CDVCommandStatus value and location records if any to javascript handler
         commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
     }
-    
     /********************************************************************************************************************
     METHOD NAME: fixDateFormat
     INPUT PARAMETERS: NSDate object
