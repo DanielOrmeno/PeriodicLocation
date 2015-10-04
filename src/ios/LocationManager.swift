@@ -92,6 +92,7 @@ class LocationManager : NSObject, CLLocationManagerDelegate {
                 //- Location Accuracy, properties & Distance filter
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
                 self.locationManager.distanceFilter = kCLDistanceFilterNone
+                self.locationManager.allowsBackgroundLocationUpdates = true
                 
                 //- Start receiving location updates
                 self.locationManager.startUpdatingLocation()
@@ -182,13 +183,6 @@ class LocationManager : NSObject, CLLocationManagerDelegate {
         }
         
         if ((interval==0)||(interval>=self.UpdatesInterval)){
-            let localNotification:UILocalNotification = UILocalNotification()
-            localNotification.alertAction = "Location is Valid"
-            localNotification.alertBody = "Updated Location Records"
-            localNotification.fireDate = NSDate(timeIntervalSinceNow: 1)
-            UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
-            //- TODO: Remove above after testing.
-            self.startLocationServices()
             print("Location is VALID with interval:\(interval)")
             return true
         } else {

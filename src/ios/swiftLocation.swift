@@ -29,14 +29,16 @@ import Foundation
         let locationUpdatesDisabled = "{enabled: false}"
         let errorMessage = "Unable to get status of location updates"
         
-        var status = self.locationManager.areUpdatesEnabled()
+        let status = self.locationManager.areUpdatesEnabled()
 
         let message = status ? locationUpdatesEnabled : locationUpdatesDisabled
 
-        if (message != nil) 
+        if (message != "") {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
-        else 
+        }
+        else{
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
+        }
         
         commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
     }
@@ -51,9 +53,9 @@ import Foundation
 
         var pluginResult: CDVPluginResult;
         let errorMessage = "Could not retrieve Keep Alive interval"
-        let keepAliveInterval = self.locationManager.getKeepAliveTimeInterval()
+        let keepAliveInterval = self.locationManager.getKeepAlive()
 
-        if (keepAliveInterval != nil) {
+        if (keepAliveInterval >= 0) {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(keepAliveInterval)}")
         } else {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
@@ -74,7 +76,7 @@ import Foundation
         let errorMessage = "Could not retrieve Updates interval"
         let updatesInterval = self.locationManager.getIntervals()
 
-        if (updatesInterval != nil) {
+        if (updatesInterval >= 0) {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(updatesInterval)}")
         } else {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
@@ -95,7 +97,7 @@ import Foundation
         let errorMessage = "Could not retrieve max number of records"
         let numberOfRecords = self.locationManager.dataManager.getNumberOfRecords()
 
-        if (numberOfRecords != nil) {
+        if (numberOfRecords >= 0) {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: "{value: \(numberOfRecords)}")
         } else {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
@@ -113,13 +115,13 @@ import Foundation
     func setKeepAliveTimeInterval (command: CDVInvokedUrlCommand) {
 
         var pluginResult: CDVPluginResult;
-        let args = command.arguments
-        let successMessage = "Keep Alive Interval updated to \(args[0]) seconds"
-        let errorMessage = "Could not update Keep Alive interval to \(args[0]) seconds"
+        let args: Double? = (command.arguments.first as! NSString).doubleValue
+        let successMessage = "Keep Alive Interval updated to \(args) seconds"
+        let errorMessage = "Could not update Keep Alive interval to \(args) seconds"
         
-        self.locationManager.setKeepAliveTimeInterval(args[0])
+        self.locationManager.setKeepAlive(args!)
 
-        if (self.locationManager.getKeepAliveTimeInterval() == args[0]){
+        if (self.locationManager.getKeepAlive() == args){
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMessage)
         } else {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
@@ -134,16 +136,16 @@ import Foundation
     
     OBSERVATIONS:
     ********************************************************************************************************************/
-    func setUpdateIntervals (command: CDVInvokedUrlCommand) {
+    func setUpdatesIntervals (command: CDVInvokedUrlCommand) {
 
         var pluginResult: CDVPluginResult;
-        let args = command.arguments
-        let successMessage = "Updates Interval updated to \(args[0]) seconds"
-        let errorMessage = "Could not update interval to \(args[0]) seconds"
+        let args:NSTimeInterval? = (command.arguments.first as! NSString).doubleValue
+        let successMessage = "Updates Interval updated to \(args) seconds"
+        let errorMessage = "Could not update interval to \(args) seconds"
         
-        self.locationManager.setIntervals(args[0])
+        self.locationManager.setIntervals(args!)
 
-        if (self.locationManager.getIntervals() == args[0]){
+        if (self.locationManager.getIntervals() == args){
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMessage)
         } else {
             pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
@@ -161,16 +163,16 @@ import Foundation
     func setNumberOfRecords (command: CDVInvokedUrlCommand) {
 
         var pluginResult: CDVPluginResult;
-        let args = command.arguments
-        let message = "Numer of records updated to \(args[0])"
-        let errorMessage = "unable to update number of records to \(args[0])"
+        let args: Int? = Int(command.arguments.first as! String)
+        let message = "Numer of records updated to \(args)"
+        let errorMessage = "unable to update number of records to \(args)"
         
-        self.locationManager.dataManager.setNumberOfRecords(args[0])
+        self.locationManager.dataManager.setNumberOfRecords(args!)
 
-        if (self.locationManager.dataManager.getNumberOfRecords() == args[0]){
+        if (self.locationManager.dataManager.getNumberOfRecords() == args){
             pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: message)
         } else {
-            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: "Unable to update number of records")
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errorMessage)
         }
         
         commandDelegate!.sendPluginResult(pluginResult, callbackId:command.callbackId)
